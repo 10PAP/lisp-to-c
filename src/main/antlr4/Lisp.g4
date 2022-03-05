@@ -16,7 +16,7 @@ include: OP 'include' HEADER CP; // debug
 fun_definition: OP ('defn' | 'DEFN') IDENTIFIER decl form CP;
 
 form: (OP (lambda_form | let_form |
-          simple_form | ) CP) | IDENTIFIER | STRING | NUMBER;
+          simple_form) CP) | IDENTIFIER | STRING | NUMBER;
 
 lambda_form: ('fn' | 'FN') decl form;
 let_form: ('let' | 'LET') OSP IDENTIFIER form CSP form; // do we really want to have simple form here?
