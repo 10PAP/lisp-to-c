@@ -4,6 +4,19 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 public class RuntimeGenerator {
+
+    public static void generateMakefile() {
+        try (PrintWriter out = new PrintWriter("out/Makefile")) {
+            out.write("""
+                    all:
+                    \tgcc main.c runtime.c
+                        
+                    """);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static void generateHeader() {
         try (PrintWriter out = new PrintWriter("out/runtime.h")) {
             out.write("""

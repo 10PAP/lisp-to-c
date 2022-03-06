@@ -16,7 +16,6 @@ public class LispWalker extends LispBaseListener {
 
     @Override
     public void enterProgram(LispParser.ProgramContext ctx) {
-        // TODODODOODODODODODO:
         // static Value makeInt()
 
         // пройдем по всем form высшего уровня - это вызывы для main.c
@@ -37,7 +36,7 @@ public class LispWalker extends LispBaseListener {
                functions.add(function);
            }
            else if (top_level_form.include() != null) {
-
+                headers.append("#include ").append(top_level_form.include().HEADER()).append("\n");
            }
         }
     }

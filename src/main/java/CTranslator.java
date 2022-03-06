@@ -45,6 +45,7 @@ public class CTranslator implements Translator {
 
         RuntimeGenerator.generateHeader();
         RuntimeGenerator.generateCFile();
+        RuntimeGenerator.generateMakefile();
     }
 
 }
