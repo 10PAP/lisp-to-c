@@ -10,9 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        LispLexer lexer = new LispLexer(CharStreams.fromString("" +
-                "(defn bebra [x y] (plus x y))" +
-                "(bebra (bebra \"4\") 3)"));
+        LispLexer lexer = new LispLexer(CharStreams.fromString("(print (+ (inc 2) (* 20 (dec 11))))"));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LispParser parser = new LispParser(tokens);
         ParseTree tree = parser.program();
