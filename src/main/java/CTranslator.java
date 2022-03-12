@@ -26,7 +26,7 @@ public class CTranslator implements Translator {
                 case "inc" -> out.append("lisp_inc").append("(");
                 case "dec" -> out.append("lisp_dec").append("(");
                 case "print" -> out.append("lisp_print").append("(");
-                default -> out.append(form.simple_form().IDENTIFIER()).append("(");
+                default -> out.append(form.simple_form().IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
             }
 
             var arg_iter = form.simple_form().form().iterator();
