@@ -35,15 +35,23 @@ public class CTranslator implements Translator {
                 case ">" -> out.append("lisp_gt").append("(");
                 case "<" -> out.append("lisp_lt").append("(");
                 case "=" -> out.append("lisp_eq").append("(");
+                case "list" -> out.append("lisp_list").append("(");
                 default -> out.append(form.simple_form().IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
             }
-
+            StringBuilder args = new StringBuilder();
             var arg_iter = form.simple_form().form().iterator();
             while(arg_iter.hasNext()) {
-                out.append(translateForm(arg_iter.next(), ""));
+                args.append(translateForm(arg_iter.next(), ""));
                 if(arg_iter.hasNext())
-                    out.append(", ");
+                    args.append(", ");
             }
+            if(form.simple_form().IDENTIFIER().getText().equals("list")) {
+                out.append(form.simple_form().form().size());
+                if(form.simple_form().form().size() > 0){
+                    out.append(", ");
+                }
+            }
+            out.append(args);
             out.append(")");
         }
         return out + delimeter;

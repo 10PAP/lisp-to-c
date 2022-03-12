@@ -26,6 +26,7 @@ public class RuntimeGenerator {
                     #include <stdio.h>
                     #include <math.h>
                     #include <stdlib.h>
+                    #include <stdarg.h>
 
                     struct Int ;
                     struct Boolean ;
@@ -33,7 +34,7 @@ public class RuntimeGenerator {
                     
                     union Value ;
 
-                    enum Tag { VOID, INT, BOOLEAN, STRING, CLOSURE, CELL, ENV } ;
+                    enum Tag { VOID, INT, BOOLEAN, STRING, CLOSURE, CELL, ENV, LIST } ;
 
                     struct Int {
                       enum Tag t ;
@@ -54,6 +55,12 @@ public class RuntimeGenerator {
                       enum Tag t ;
                       union Value* addr ;
                     } ;
+                    
+                    struct ValueList {
+                      enum Tag t ;
+                      union Value* values ;
+                      int cnt ;
+                    } ;
 
                     union Value {
                       enum Tag t ;
@@ -61,6 +68,7 @@ public class RuntimeGenerator {
                       struct Boolean b ;
                       struct Cell cell ;
                       struct String s ;
+                      struct ValueList list;
                     } ;
 
                     typedef union Value Value ;
@@ -85,6 +93,8 @@ public class RuntimeGenerator {
                     Value lisp_gt(Value a, Value b);
                     Value lisp_lt(Value a, Value b);
                     Value lisp_eq(Value a, Value b);
+                    
+                    Value lisp_list(int cnt, ...);
                     
 
                     #endif""");
@@ -125,6 +135,20 @@ public class RuntimeGenerator {
                       v.cell.addr = malloc(sizeof(Value)) ;
                       *v.cell.addr = initialValue ;
                       return v ;
+                    }
+                    
+                    Value lisp_list(int cnt, ...) {
+                        va_list ap ;
+                        va_start(ap, cnt) ;
+                        Value v ;
+                        v.list.t = LIST ;
+                        v.list.cnt = cnt ;
+                        v.list.values = (union Value*)malloc(sizeof(Value) * cnt) ;
+                        for(int j = 0 ; j < cnt ; j++){
+                          v.list.values[j] = va_arg(ap, Value) ;
+                        }
+                        va_end(ap) ;
+                        return v ;
                     }
                     
                     /*
@@ -201,6 +225,13 @@ public class RuntimeGenerator {
                             } else {
                                 printf("false ");
                             }
+                        }
+                        if (a.t == LIST) {
+                            printf("(");
+                            for(int j = 0 ; j < a.list.cnt ; j++){
+                                lisp_print(a.list.values[j]); 
+                            } 
+                            printf(") ");
                         }
                     }
                     
