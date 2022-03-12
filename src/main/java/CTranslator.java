@@ -1,3 +1,4 @@
+import common.FunctionIdGenerator;
 import common.RuntimeGenerator;
 import gen.LispParser;
 
@@ -37,6 +38,9 @@ public class CTranslator implements Translator {
                 case ">" -> out.append("lisp_gt").append("(");
                 case "<" -> out.append("lisp_lt").append("(");
                 case "=" -> out.append("lisp_eq").append("(");
+                case "or" -> out.append("lisp_or").append("(");
+                case "and" -> out.append("lisp_and").append("(");
+                case "not" -> out.append("lisp_not").append("(");
                 case "list" -> out.append("lisp_list").append("(");
                 case "if" ->  {
                     out.append("(");
@@ -44,7 +48,7 @@ public class CTranslator implements Translator {
                     out.append(translateIf(args)).append(")");
                     return out + delimeter;
                 }
-                default -> out.append(form.simple_form().IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
+                default -> out.append(form.simple_form().IDENTIFIER()).append(FunctionIdGenerator.getID()).append("("); // подразумевается, что сейчас есть только глобальный scope!!!
             }
             StringBuilder args = new StringBuilder();
             var arg_iter = form.simple_form().form().iterator();

@@ -93,6 +93,9 @@ public class RuntimeGenerator {
                     Value lisp_gt(Value a, Value b);
                     Value lisp_lt(Value a, Value b);
                     Value lisp_eq(Value a, Value b);
+                    Value lisp_and(Value a, Value b);
+                    Value lisp_or(Value a, Value b);
+                    Value lisp_not(Value a);
                     
                     Value lisp_list(int cnt, ...);
                     
@@ -264,6 +267,39 @@ public class RuntimeGenerator {
                     inline Value lisp_eq(Value a, Value b) {
                         if (a.t == INT && b.t == INT) {
                             if (a.z.value == b.z.value) {
+                                return MakeBoolean(1);
+                            } else {
+                                return MakeBoolean(0);
+                            }
+                        }
+                        return *((Value *) NULL);
+                    }
+                    
+                    Value lisp_and(Value a, Value b) {
+                        if (a.t == BOOLEAN && b.t == BOOLEAN) {
+                            if (a.b.value && b.b.value) {
+                                return MakeBoolean(1);
+                            } else {
+                                return MakeBoolean(0);
+                            }
+                        }
+                        return *((Value *) NULL);
+                    }
+                    
+                    Value lisp_or(Value a, Value b) {
+                        if (a.t == BOOLEAN && b.t == BOOLEAN) {
+                            if (a.b.value || b.b.value) {
+                                return MakeBoolean(1);
+                            } else {
+                                return MakeBoolean(0);
+                            }
+                        }
+                        return *((Value *) NULL);
+                    }
+                    
+                    Value lisp_not(Value a) {
+                        if (a.t == BOOLEAN) {
+                            if (!a.b.value) {
                                 return MakeBoolean(1);
                             } else {
                                 return MakeBoolean(0);

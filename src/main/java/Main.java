@@ -11,11 +11,21 @@ public class Main {
     public static void main(String[] args) {
 
         LispLexer lexer = new LispLexer(CharStreams.fromString(
-                "(defn factorial [n]\n" +
-                "  (if (= n 1)              \n" +
-                "      1                           \n" +
-                "      (* n (factorial (- n 1))))) \n" +
-                "(print (factorial 12))\n"));
+                        """
+                        (defn factorial [n]
+                            (if (= n 1)
+                                1
+                                (* n (factorial (- n 1)))))
+                        
+                        (defn zerop [x] (= x 0))
+                        
+                        (defn fibonacci [N]
+                            (if (or (zerop N) (= N 1))
+                                1
+                                (+ (fibonacci (- N 1)) (fibonacci (- N 2)))))
+                                
+                        (print (list (factorial 12) (fibonacci 20)))
+                        """));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         LispParser parser = new LispParser(tokens);
