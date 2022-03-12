@@ -10,8 +10,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        LispLexer lexer = new LispLexer(CharStreams.fromString("(defn aboba [x y] (= x y))\n" +
-                "(print (list true 3))\n"));
+        LispLexer lexer = new LispLexer(CharStreams.fromString(
+                "(defn factorial [n]\n" +
+                "  (if (= n 1)              \n" +
+                "      1                           \n" +
+                "      (* n (factorial (- n 1))))) \n" +
+                "(print (factorial 12))\n"));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         LispParser parser = new LispParser(tokens);

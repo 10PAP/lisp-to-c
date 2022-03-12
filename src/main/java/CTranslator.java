@@ -1,6 +1,8 @@
 import common.RuntimeGenerator;
 import gen.LispParser;
 
+import java.util.List;
+
 public class CTranslator implements Translator {
 
     public String translateForm(LispParser.FormContext form, String delimeter) {
@@ -36,6 +38,12 @@ public class CTranslator implements Translator {
                 case "<" -> out.append("lisp_lt").append("(");
                 case "=" -> out.append("lisp_eq").append("(");
                 case "list" -> out.append("lisp_list").append("(");
+                case "if" ->  {
+                    out.append("(");
+                    List<LispParser.FormContext> args = form.simple_form().form();
+                    out.append(translateIf(args)).append(")");
+                    return out + delimeter;
+                }
                 default -> out.append(form.simple_form().IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
             }
             StringBuilder args = new StringBuilder();
@@ -55,6 +63,14 @@ public class CTranslator implements Translator {
             out.append(")");
         }
         return out + delimeter;
+    }
+
+    private String translateIf(List<LispParser.FormContext> args) {
+        String out = "";
+        out += "(" + translateForm(args.get(0), "") + ").b.value == 1" + " ? " +
+                translateForm(args.get(1), "") + " : " +
+                translateForm(args.get(2), "");
+        return out;
     }
 
     CTranslator(StringBuilder headers) {
