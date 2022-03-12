@@ -64,37 +64,14 @@ public class RuntimeGenerator {
                     } ;
 
                     typedef union Value Value ;
-
-                    static Value MakeInt(int n) {
-                      Value v ;
-                      v.z.t = INT ;
-                      v.z.value = n ;
-                      return v ;
-                    }
-
-                    static Value MakeBoolean(unsigned int b) {
-                      Value v ;
-                      v.b.t = BOOLEAN ;
-                      v.b.value = b ;
-                      return v ;
-                    }
-                    
-                    static Value MakeString(char * str) {
-                      Value v ;
-                      v.s.t = STRING;
-                      v.s.value = str;
-                      return v ;
-                    }
-
-                    static Value NewCell(Value initialValue) {
-                      Value v ;
-                      v.cell.t = CELL ;
-                      v.cell.addr = malloc(sizeof(Value)) ;
-                      *v.cell.addr = initialValue ;
-                      return v ;
-                    }
                     
                     // RUNTIME FUNCTIONS DECLARATION
+                    Value MakeInt(int n);
+                    Value MakeBoolean(unsigned int b);
+                    Value MakeString(char * str);
+                    Value NewCell(Value initialValue);
+                    
+                    
                     Value lisp_add(Value a, Value b);
                     Value lisp_sub(Value a, Value b);
                     Value lisp_mul(Value a, Value b);
@@ -102,7 +79,13 @@ public class RuntimeGenerator {
                     Value lisp_mod(Value a, Value b);
                     Value lisp_inc(Value a);
                     Value lisp_dec(Value a);
+                    
                     void lisp_print(Value a);
+                    
+                    Value lisp_gt(Value a, Value b);
+                    Value lisp_lt(Value a, Value b);
+                    Value lisp_eq(Value a, Value b);
+                    
 
                     #endif""");
         } catch (FileNotFoundException e) {
@@ -114,9 +97,42 @@ public class RuntimeGenerator {
         try (PrintWriter out = new PrintWriter("out/runtime.c")) {
             out.write("""
                     #include "runtime.h"
-                                        
+                            
+                    Value MakeInt(int n) {
+                      Value v ;
+                      v.z.t = INT ;
+                      v.z.value = n ;
+                      return v ;
+                    }
+
+                    Value MakeBoolean(unsigned int b) {
+                      Value v ;
+                      v.b.t = BOOLEAN ;
+                      v.b.value = b ;
+                      return v ;
+                    }
+                    
+                    Value MakeString(char * str) {
+                      Value v ;
+                      v.s.t = STRING;
+                      v.s.value = str;
+                      return v ;
+                    }
+
+                    Value NewCell(Value initialValue) {
+                      Value v ;
+                      v.cell.t = CELL ;
+                      v.cell.addr = malloc(sizeof(Value)) ;
+                      *v.cell.addr = initialValue ;
+                      return v ;
+                    }
+                    
+                    /*
+                     * ARITHMETIC OPERATIONS
+                     */
+                                 
                     // addition operation
-                    Value lisp_add(Value a, Value b) {
+                    inline Value lisp_add(Value a, Value b) {
                     	if (a.t == INT && b.t == INT) {
                     		a.z.value = a.z.value + b.z.value ;
                     	}
@@ -124,7 +140,7 @@ public class RuntimeGenerator {
                     }
                      \s
                     // subtraction operation
-                    Value lisp_sub(Value a, Value b) {
+                    inline Value lisp_sub(Value a, Value b) {
                     	if (a.t == INT && b.t == INT) {
                     		a.z.value = a.z.value - b.z.value ;
                     	}
@@ -132,7 +148,7 @@ public class RuntimeGenerator {
                     }
                      \s
                     // multiplication operation
-                    Value lisp_mul(Value a, Value b) {
+                    inline Value lisp_mul(Value a, Value b) {
                     	if (a.t == INT && b.t == INT) {
                     		a.z.value = a.z.value * b.z.value ;
                     	}
@@ -140,7 +156,7 @@ public class RuntimeGenerator {
                     }
                      \s
                     // division operation
-                    Value lisp_div(Value a, Value b) {
+                    inline Value lisp_div(Value a, Value b) {
                     	if (a.t == INT && b.t == INT) {
                     		a.z.value = a.z.value / b.z.value ;
                     	}
@@ -148,7 +164,7 @@ public class RuntimeGenerator {
                     }
                      \s
                     // modulus operation
-                    Value lisp_mod(Value a, Value b) {
+                    inline Value lisp_mod(Value a, Value b) {
                     	if (a.t == INT && b.t == INT) {
                     		a.z.value = a.z.value % b.z.value ;
                     	}
@@ -156,7 +172,7 @@ public class RuntimeGenerator {
                     }
                      \s
                     // increment a by 10
-                    Value lisp_inc(Value a) {
+                    inline Value lisp_inc(Value a) {
                     	if (a.t == INT) {
                     		a.z.value++;
                     	}
@@ -164,18 +180,68 @@ public class RuntimeGenerator {
                     }
                      \s
                     // decrement b by 20
-                    Value lisp_dec(Value a) {
+                    inline Value lisp_dec(Value a) {
                     	if (a.t == INT) {
                     		a.z.value--;
                     	}
                     	return a;
                     }
                     
+                    /*
+                     *     I/O
+                     */
+                    
                     void lisp_print(Value a) {
                         if (a.t == INT) {
                             printf("%d ", a.z.value);
                         }
+                        if (a.t == BOOLEAN) {
+                            if (a.b.value == 1) {
+                                printf("true ");
+                            } else {
+                                printf("false ");
+                            }
+                        }
                     }
+                    
+                    /*
+                     * BOOLEAN OPERATIONS
+                     */
+                     
+                    inline Value lisp_gt(Value a, Value b) {
+                        if (a.t == INT && b.t == INT) {
+                            if (a.z.value > b.z.value) {
+                                return MakeBoolean(1);
+                            } else {
+                                return MakeBoolean(0);
+                            }
+                        }
+                        return *((Value *) NULL);
+                    }
+                    
+                    inline Value lisp_lt(Value a, Value b) {
+                        if (a.t == INT && b.t == INT) {
+                            if (a.z.value < b.z.value) {
+                                return MakeBoolean(1);
+                            } else {
+                                return MakeBoolean(0);
+                            }
+                        }
+                        return *((Value *) NULL);
+                    }
+                    
+                    inline Value lisp_eq(Value a, Value b) {
+                        if (a.t == INT && b.t == INT) {
+                            if (a.z.value == b.z.value) {
+                                return MakeBoolean(1);
+                            } else {
+                                return MakeBoolean(0);
+                            }
+                        }
+                        return *((Value *) NULL);
+                    }
+                    
+                    // 
                     """);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

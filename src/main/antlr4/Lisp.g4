@@ -27,7 +27,7 @@ decl: OSP IDENTIFIER* CSP;
 /*------------------------------------------------------------------
  * LEXER RULES
  *------------------------------------------------------------------*/
-IDENTIFIER : ((LETTER (LETTER | DIGIT | LOW | EQ)*) | PLUS | MINUS | MULT | DIV | EQ | LOW) ;
+IDENTIFIER : ((LETTER (LETTER | DIGIT | LOW | EQ)*) | PLUS | MINUS | MULT | DIV | EQ | LOW | ORDER) ;
 
 PLUS : '+';
 MINUS : '-';
@@ -35,6 +35,7 @@ MULT : '*';
 DIV : '/';
 LOW : '_';
 EQ : '=';
+ORDER : '>' | '<' | '>=' |'<=';
 
 OP : '(';
 CP : ')';

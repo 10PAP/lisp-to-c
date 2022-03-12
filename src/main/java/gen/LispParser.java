@@ -1,4 +1,4 @@
-// Generated from /home/charlie/IdeaProjects/LISPbian/src/main/antlr4/Lisp.g4 by ANTLR 4.9.2
+// Generated from /home/charlie/GitHub/lisp-to-c/src/main/antlr4/Lisp.g4 by ANTLR 4.9.2
 package gen;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -18,9 +18,9 @@ public class LispParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, IDENTIFIER=8, 
-		PLUS=9, MINUS=10, MULT=11, DIV=12, LOW=13, EQ=14, OP=15, CP=16, OSP=17, 
-		CSP=18, STRING=19, HEADER=20, NUMBER=21, WHITESPACE=22, DIGIT=23, LETTER=24, 
-		LOWER=25, UPPER=26;
+		PLUS=9, MINUS=10, MULT=11, DIV=12, LOW=13, EQ=14, ORDER=15, OP=16, CP=17, 
+		OSP=18, CSP=19, STRING=20, HEADER=21, NUMBER=22, WHITESPACE=23, DIGIT=24, 
+		LETTER=25, LOWER=26, UPPER=27;
 	public static final int
 		RULE_program = 0, RULE_top_level_from = 1, RULE_include = 2, RULE_fun_definition = 3, 
 		RULE_form = 4, RULE_lambda_form = 5, RULE_let_form = 6, RULE_simple_form = 7, 
@@ -36,7 +36,7 @@ public class LispParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'include'", "'defn'", "'DEFN'", "'fn'", "'FN'", "'let'", "'LET'", 
-			null, "'+'", "'-'", "'*'", "'/'", "'_'", "'='", "'('", "')'", "'['", 
+			null, "'+'", "'-'", "'*'", "'/'", "'_'", "'='", null, "'('", "')'", "'['", 
 			"']'"
 		};
 	}
@@ -44,8 +44,9 @@ public class LispParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, null, null, null, "IDENTIFIER", "PLUS", 
-			"MINUS", "MULT", "DIV", "LOW", "EQ", "OP", "CP", "OSP", "CSP", "STRING", 
-			"HEADER", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", "LOWER", "UPPER"
+			"MINUS", "MULT", "DIV", "LOW", "EQ", "ORDER", "OP", "CP", "OSP", "CSP", 
+			"STRING", "HEADER", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", "LOWER", 
+			"UPPER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -398,7 +399,7 @@ public class LispParser extends Parser {
 				{
 				setState(43);
 				match(OP);
-				setState(48);
+				setState(47);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case T__3:
@@ -421,14 +422,10 @@ public class LispParser extends Parser {
 					simple_form();
 					}
 					break;
-				case CP:
-					{
-					}
-					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(50);
+				setState(49);
 				match(CP);
 				}
 				}
@@ -726,28 +723,28 @@ public class LispParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\34V\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\35V\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\7\2\26"+
 		"\n\2\f\2\16\2\31\13\2\3\2\3\2\3\3\3\3\3\3\5\3 \n\3\3\4\3\4\3\4\3\4\3\4"+
-		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\5\6\63\n\6\3\6\3\6\3"+
+		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\5\6\62\n\6\3\6\3\6\3\6\3"+
 		"\6\3\6\5\69\n\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\7"+
 		"\tH\n\t\f\t\16\tK\13\t\3\n\3\n\7\nO\n\n\f\n\16\nR\13\n\3\n\3\n\3\n\2\2"+
-		"\13\2\4\6\b\n\f\16\20\22\2\5\3\2\4\5\3\2\6\7\3\2\b\t\2W\2\27\3\2\2\2\4"+
+		"\13\2\4\6\b\n\f\16\20\22\2\5\3\2\4\5\3\2\6\7\3\2\b\t\2V\2\27\3\2\2\2\4"+
 		"\37\3\2\2\2\6!\3\2\2\2\b&\3\2\2\2\n8\3\2\2\2\f:\3\2\2\2\16>\3\2\2\2\20"+
 		"E\3\2\2\2\22L\3\2\2\2\24\26\5\4\3\2\25\24\3\2\2\2\26\31\3\2\2\2\27\25"+
 		"\3\2\2\2\27\30\3\2\2\2\30\32\3\2\2\2\31\27\3\2\2\2\32\33\7\2\2\3\33\3"+
 		"\3\2\2\2\34 \5\n\6\2\35 \5\b\5\2\36 \5\6\4\2\37\34\3\2\2\2\37\35\3\2\2"+
-		"\2\37\36\3\2\2\2 \5\3\2\2\2!\"\7\21\2\2\"#\7\3\2\2#$\7\26\2\2$%\7\22\2"+
-		"\2%\7\3\2\2\2&\'\7\21\2\2\'(\t\2\2\2()\7\n\2\2)*\5\22\n\2*+\5\n\6\2+,"+
-		"\7\22\2\2,\t\3\2\2\2-\62\7\21\2\2.\63\5\f\7\2/\63\5\16\b\2\60\63\5\20"+
-		"\t\2\61\63\3\2\2\2\62.\3\2\2\2\62/\3\2\2\2\62\60\3\2\2\2\62\61\3\2\2\2"+
-		"\63\64\3\2\2\2\649\7\22\2\2\659\7\n\2\2\669\7\25\2\2\679\7\27\2\28-\3"+
-		"\2\2\28\65\3\2\2\28\66\3\2\2\28\67\3\2\2\29\13\3\2\2\2:;\t\3\2\2;<\5\22"+
-		"\n\2<=\5\n\6\2=\r\3\2\2\2>?\t\4\2\2?@\7\23\2\2@A\7\n\2\2AB\5\n\6\2BC\7"+
-		"\24\2\2CD\5\n\6\2D\17\3\2\2\2EI\7\n\2\2FH\5\n\6\2GF\3\2\2\2HK\3\2\2\2"+
-		"IG\3\2\2\2IJ\3\2\2\2J\21\3\2\2\2KI\3\2\2\2LP\7\23\2\2MO\7\n\2\2NM\3\2"+
-		"\2\2OR\3\2\2\2PN\3\2\2\2PQ\3\2\2\2QS\3\2\2\2RP\3\2\2\2ST\7\24\2\2T\23"+
-		"\3\2\2\2\b\27\37\628IP";
+		"\2\37\36\3\2\2\2 \5\3\2\2\2!\"\7\22\2\2\"#\7\3\2\2#$\7\27\2\2$%\7\23\2"+
+		"\2%\7\3\2\2\2&\'\7\22\2\2\'(\t\2\2\2()\7\n\2\2)*\5\22\n\2*+\5\n\6\2+,"+
+		"\7\23\2\2,\t\3\2\2\2-\61\7\22\2\2.\62\5\f\7\2/\62\5\16\b\2\60\62\5\20"+
+		"\t\2\61.\3\2\2\2\61/\3\2\2\2\61\60\3\2\2\2\62\63\3\2\2\2\63\64\7\23\2"+
+		"\2\649\3\2\2\2\659\7\n\2\2\669\7\26\2\2\679\7\30\2\28-\3\2\2\28\65\3\2"+
+		"\2\28\66\3\2\2\28\67\3\2\2\29\13\3\2\2\2:;\t\3\2\2;<\5\22\n\2<=\5\n\6"+
+		"\2=\r\3\2\2\2>?\t\4\2\2?@\7\24\2\2@A\7\n\2\2AB\5\n\6\2BC\7\25\2\2CD\5"+
+		"\n\6\2D\17\3\2\2\2EI\7\n\2\2FH\5\n\6\2GF\3\2\2\2HK\3\2\2\2IG\3\2\2\2I"+
+		"J\3\2\2\2J\21\3\2\2\2KI\3\2\2\2LP\7\24\2\2MO\7\n\2\2NM\3\2\2\2OR\3\2\2"+
+		"\2PN\3\2\2\2PQ\3\2\2\2QS\3\2\2\2RP\3\2\2\2ST\7\25\2\2T\23\3\2\2\2\b\27"+
+		"\37\618IP";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

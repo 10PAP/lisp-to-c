@@ -6,7 +6,13 @@ public class CTranslator implements Translator {
     public String translateForm(LispParser.FormContext form, String delimeter) {
         StringBuilder out = new StringBuilder();
         if(form.IDENTIFIER() != null){
-            return form.IDENTIFIER().getText();
+            String ident = form.IDENTIFIER().getText();
+            if (ident.equals("true")) {
+                return "MakeBoolean(1)";
+            } else if (ident.equals("false")) {
+                return "MakeBoolean(0)";
+            }
+            return ident;
         }
         if(form.NUMBER() != null){
             return "MakeInt(" + form.NUMBER().getText() + ")";
@@ -26,6 +32,9 @@ public class CTranslator implements Translator {
                 case "inc" -> out.append("lisp_inc").append("(");
                 case "dec" -> out.append("lisp_dec").append("(");
                 case "print" -> out.append("lisp_print").append("(");
+                case ">" -> out.append("lisp_gt").append("(");
+                case "<" -> out.append("lisp_lt").append("(");
+                case "=" -> out.append("lisp_eq").append("(");
                 default -> out.append(form.simple_form().IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
             }
 
