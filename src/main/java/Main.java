@@ -22,14 +22,12 @@ public class Main {
                         
                         (defn zerop [x] (= x 0))
                         
-                        (defn proxy [f] f)
-                        
                         (defn fibonacci [N]
                             (if (or (zerop N) (= N 1))
                                 1
                                 (+ (fibonacci (- N 1)) (fibonacci (- N 2)))))
                                 
-                        (print (list ((proxy factorial) 12) (fibonacci 20) true))
+                        (print (list (read) (read) (read)))
                         """));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 

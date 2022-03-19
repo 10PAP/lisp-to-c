@@ -27,6 +27,7 @@ public class RuntimeGenerator {
                     #include <math.h>
                     #include <stdlib.h>
                     #include <stdarg.h>
+                    #include <string.h>
 
                     struct Int ;
                     struct Boolean ;
@@ -89,6 +90,7 @@ public class RuntimeGenerator {
                     Value lisp_dec(Value a);
                     
                     void lisp_print(Value a);
+                    Value lisp_read(void);
                     
                     Value lisp_gt(Value a, Value b);
                     Value lisp_lt(Value a, Value b);
@@ -110,6 +112,7 @@ public class RuntimeGenerator {
         try (PrintWriter out = new PrintWriter("out/runtime.c")) {
             out.write("""
                     #include "runtime.h"
+                    #include <errno.h>
                             
                     Value MakeInt(int n) {
                       Value v ;
@@ -232,10 +235,33 @@ public class RuntimeGenerator {
                         if (a.t == LIST) {
                             printf("(");
                             for(int j = 0 ; j < a.list.cnt ; j++){
-                                lisp_print(a.list.values[j]); 
-                            } 
+                                lisp_print(a.list.values[j]);
+                            }
                             printf(") ");
                         }
+                    }
+                    
+                    Value lisp_read(void) {
+                        char buff[100];
+                        fgets(buff, 100, stdin);
+                        int size = strlen(buff);
+                        buff[size-1] = 0;
+                        
+                        //printf("-- DEBUG: %s\\n", buff);
+                        if (!strcmp(buff, "true")) {
+                            return MakeBoolean(1);
+                        } else if (!strcmp(buff, "false")) {
+                            return MakeBoolean(0);
+                        }
+                        
+                        int result = strtol(buff, NULL, 10);
+                        if (result == 0) {
+                                if (errno == EINVAL) {
+                                    printf("Couldn't parse input\\n");
+                                    exit(1);
+                                }
+                        }
+                        return MakeInt(result);
                     }
                     
                     /*
