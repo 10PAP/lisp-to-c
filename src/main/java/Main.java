@@ -12,10 +12,13 @@ public class Main {
 
         LispLexer lexer = new LispLexer(CharStreams.fromString(
                         """
-                        (defn factorial [n]
+                        (defn fac_helper [n acc]
                             (if (= n 1)
-                                1
-                                (* n (factorial (- n 1)))))
+                                acc
+                                (fac_helper (- n 1) (* acc n))))
+                        
+                        (defn factorial [n]
+                            (fac_helper n 1))
                         
                         (defn zerop [x] (= x 0))
                         
@@ -24,7 +27,7 @@ public class Main {
                                 1
                                 (+ (fibonacci (- N 1)) (fibonacci (- N 2)))))
                                 
-                        (print (list (factorial 12) (fibonacci 20)))
+                        (print (list (factorial 12) (fibonacci 20) true))
                         """));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 

@@ -20,7 +20,7 @@ form: (OP (lambda_form | let_form |
 
 lambda_form: ('fn' | 'FN') decl form;
 let_form: ('let' | 'LET') OSP IDENTIFIER form CSP form; // do we really want to have simple form here?
-simple_form: IDENTIFIER (form)*;
+simple_form: (form)+;
 
 decl: OSP IDENTIFIER* CSP;
 
