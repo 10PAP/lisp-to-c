@@ -11,17 +11,19 @@ public class CTranslator implements Translator {
         if (form.IDENTIFIER() != null) {
             String ident = form.IDENTIFIER().getText();
             if (ident.equals("true")) {
-                return "MakeBoolean(1)";
+                out.append("MakeBoolean(1)");
             } else if (ident.equals("false")) {
-                return "MakeBoolean(0)";
+                out.append("MakeBoolean(0)");
             }
-            return ident;
+            else {
+                out.append(ident);
+            }
         }
         if (form.NUMBER() != null) {
-            return "MakeInt(" + form.NUMBER().getText() + ")";
+            out.append("MakeInt(").append(form.NUMBER().getText()).append(")");
         }
         if (form.STRING() != null) {
-            return "MakeString(" + form.STRING().getText() + ")";
+            out.append("MakeString(").append(form.STRING().getText()).append(")");
         }
         if (form.simple_form() != null) {
 
