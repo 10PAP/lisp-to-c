@@ -36,6 +36,8 @@ public class RuntimeGenerator {
                     union Value ;
 
                     enum Tag { VOID, INT, BOOLEAN, STRING, CLOSURE, CELL, ENV, LIST } ;
+                    
+                    typedef union Value (*Lambda)()  ;
 
                     struct Int {
                       enum Tag t ;
@@ -62,6 +64,12 @@ public class RuntimeGenerator {
                       union Value* values ;
                       int cnt ;
                     } ;
+                    
+                    struct Closure {
+                      enum Tag t ;
+                      void* lam ;
+                      void* env ;
+                    } ;
 
                     union Value {
                       enum Tag t ;
@@ -70,6 +78,7 @@ public class RuntimeGenerator {
                       struct Cell cell ;
                       struct String s ;
                       struct ValueList list;
+                      struct Closure clo ;
                     } ;
 
                     typedef union Value Value ;
@@ -79,6 +88,7 @@ public class RuntimeGenerator {
                     Value MakeBoolean(unsigned int b);
                     Value MakeString(char * str);
                     Value NewCell(Value initialValue);
+                    Value MakePrimitive(void* prim);
                     
                     
                     Value lisp_add(Value a, Value b);
@@ -141,6 +151,14 @@ public class RuntimeGenerator {
                       v.cell.addr = malloc(sizeof(Value)) ;
                       *v.cell.addr = initialValue ;
                       return v ;
+                    }
+                    
+                    Value MakePrimitive(void* prim) {
+                        Value v ;
+                        v.clo.t = CLOSURE ;
+                        v.clo.lam = prim ;
+                        v.clo.env = NULL ;
+                        return v ;
                     }
                     
                     Value lisp_list(int cnt, ...) {

@@ -3,6 +3,7 @@ import common.RuntimeGenerator;
 import gen.LispParser;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CTranslator implements Translator {
 
@@ -26,7 +27,7 @@ public class CTranslator implements Translator {
             out.append("MakeString(").append(form.STRING().getText()).append(")");
         }
         if (form.simple_form() != null) {
-
+            // application happens right here...
             LispParser.FormContext firstForm = form.simple_form().form(0);
             if (firstForm.IDENTIFIER() != null) {
                 // special forms
@@ -46,7 +47,13 @@ public class CTranslator implements Translator {
                     case "or" -> out.append("lisp_or").append("(");
                     case "and" -> out.append("lisp_and").append("(");
                     case "not" -> out.append("lisp_not").append("(");
-                    case "list" -> out.append("lisp_list").append("(");
+                    case "list" -> {
+                        out.append("lisp_list").append("(");
+                        out.append(form.simple_form().form().size() - 1);
+                        if (form.simple_form().form().size() - 1 > 0) {
+                            out.append(", ");
+                        }
+                    }
                     case "if" -> {
                         out.append("(");
                         List<LispParser.FormContext> args = form.simple_form().form();
@@ -56,23 +63,28 @@ public class CTranslator implements Translator {
                     }
                     default -> out.append(firstForm.IDENTIFIER()).append(FunctionIdGenerator.getID()).append("("); // подразумевается, что сейчас есть только глобальный scope!!!
                 }
-                StringBuilder args = new StringBuilder();
-                var arg_iter = form.simple_form().form().iterator();
-                arg_iter.next(); // because first form isn't argument
-                while (arg_iter.hasNext()) {
-                    args.append(translateForm(arg_iter.next(), ""));
-                    if (arg_iter.hasNext())
-                        args.append(", ");
-                }
-                if (firstForm.IDENTIFIER().getText().equals("list")) {
-                    out.append(form.simple_form().form().size());
-                    if (form.simple_form().form().size() > 0) {
-                        out.append(", ");
-                    }
-                }
-                out.append(args);
-                out.append(")");
             }
+            else {
+                String applicator = translateForm(firstForm, "");
+                int num_of_args = form.simple_form().form().size() - 1;
+                StringBuilder dirty_hack = new StringBuilder("(Value (*)(");
+                String prefix = "";
+                for(int i = 0 ; i < num_of_args ; i++){
+                    dirty_hack.append(prefix).append("Value");
+                    prefix = ", ";
+                }
+                dirty_hack.append("))");
+                out.append("(").append(dirty_hack).append("(").append(applicator).append(").clo.lam)").append("(");
+            }
+            StringBuilder args = new StringBuilder();
+            String prefix = "";
+            for(var arg : form.simple_form().form().stream().skip(1).toList()){
+                args.append(prefix);
+                args.append(translateForm(arg, ""));
+                prefix = ", ";
+            }
+            out.append(args);
+            out.append(")");
         }
         return out + delimeter;
     }

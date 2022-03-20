@@ -1,6 +1,7 @@
 import gen.LispBaseListener;
 import gen.LispParser;
 import common.FunctionIdGenerator;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -11,6 +12,7 @@ public class LispWalker extends LispBaseListener {
 
     StringBuilder headers = new StringBuilder();
     StringBuilder mainBody = new StringBuilder();
+    StringBuilder initializer = new StringBuilder();
     List<StringBuilder> functions = new ArrayList<>();
     CTranslator cTranslator = new CTranslator(headers);
 
@@ -24,16 +26,22 @@ public class LispWalker extends LispBaseListener {
                mainBody.append("\t").append(cTranslator.translateForm(top_level_form.form(), ";\n"));
            }
            else if(top_level_form.fun_definition() != null){
-               var function = new StringBuilder();
-               function.append("Value ").append(top_level_form.fun_definition().IDENTIFIER()).append(FunctionIdGenerator.createID()).append("(");
-               var arg_iter = top_level_form.fun_definition().decl().IDENTIFIER().iterator();
-               while(arg_iter.hasNext()) {
-                   function.append("Value ").append(arg_iter.next().getText());
-                   if(arg_iter.hasNext())
-                       function.append(", ");
+               LispParser.Fun_definitionContext fun_definition = top_level_form.fun_definition();
+               StringBuilder c_function_definition = new StringBuilder();
+               String c_function_name = fun_definition.IDENTIFIER().getText() + FunctionIdGenerator.createID();
+               // generate a new function itself
+               c_function_definition.append("Value ").append(c_function_name).append("(");
+               String prefix = "";
+               for(var arg : fun_definition.decl().IDENTIFIER()) {
+                   c_function_definition.append(prefix);
+                   c_function_definition.append("Value ").append(arg.getText());
+                   prefix = ", ";
                }
-               function.append(") {\n" + "\treturn ").append(cTranslator.translateForm(top_level_form.fun_definition().form(), ";\n}\n\n"));
-               functions.add(function);
+               c_function_definition.append(") {\n" + "\treturn ").append(cTranslator.translateForm(fun_definition.form(), ";\n}\n"));
+               // generate Value-typed variable with pointer to new function inside
+               c_function_definition.append("Value ").append(fun_definition.IDENTIFIER().getText()).append(";\n");
+               initializer.append("\t").append(fun_definition.IDENTIFIER().getText()).append(" = MakePrimitive(&").append(c_function_name).append(");\n");
+               functions.add(c_function_definition);
            }
            else if (top_level_form.include() != null) {
                 headers.append("#include ").append(top_level_form.include().HEADER()).append("\n");
@@ -44,9 +52,8 @@ public class LispWalker extends LispBaseListener {
         try (PrintWriter out = new PrintWriter("out/main.c")) {
             out.println(headers.toString());
             functions.forEach(out::println);
-            out.println("int main() {");
-            out.println(mainBody);
-            out.println("}\n");
+            out.println("void init(){\n" + initializer + "}\n");
+            out.println("int main() {\n\tinit();\n" + mainBody + "}\n");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
