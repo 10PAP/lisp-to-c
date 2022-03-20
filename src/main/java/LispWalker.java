@@ -38,7 +38,13 @@ public class LispWalker extends LispBaseListener {
     public void exitProgram(LispParser.ProgramContext ctx) {
         try (PrintWriter out = new PrintWriter("out/main.c")) {
             out.println(headers.toString());
+            out.println("Value nil;\n");
             functions.forEach(out::println);
+            initializer.append("""
+                                    nil.cell.t = CELL;
+                                    nil.cell.car = 0;
+                                    nil.cell.cdr = 0;
+                                    """);
             out.println("void init(){\n" + initializer + "}\n");
             out.println("int main() {\n\tinit();\n" + mainBody + "}\n");
         } catch (FileNotFoundException e) {

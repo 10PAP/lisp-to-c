@@ -56,7 +56,8 @@ public class RuntimeGenerator {
 
                     struct Cell {
                       enum Tag t ;
-                      union Value* addr ;
+                      union Value* car ;
+                      union Value* cdr ;
                     } ;
                     
                     struct ValueList {
@@ -87,7 +88,7 @@ public class RuntimeGenerator {
                     Value MakeInt(int n);
                     Value MakeBoolean(unsigned int b);
                     Value MakeString(char * str);
-                    Value NewCell(Value initialValue);
+                    Value NewCell(Value initialCar, Value initialCdr);
                     Value MakePrimitive(void* prim);
                     
                     
@@ -145,11 +146,13 @@ public class RuntimeGenerator {
                       return v ;
                     }
 
-                    Value NewCell(Value initialValue) {
+                    Value NewCell(Value initialCar, Value initialCdr) {
                       Value v ;
                       v.cell.t = CELL ;
-                      v.cell.addr = malloc(sizeof(Value)) ;
-                      *v.cell.addr = initialValue ;
+                      v.cell.car = malloc(sizeof(Value)) ;
+                      v.cell.cdr = malloc(sizeof(Value)) ;
+                      *v.cell.car = initialCar ;
+                      *v.cell.cdr = initialCdr ;
                       return v ;
                     }
                     
@@ -250,12 +253,20 @@ public class RuntimeGenerator {
                                 printf("false ");
                             }
                         }
+                        if (a.t == CELL) {
+                            printf("(");
+                            if(a.cell.car != 0)
+                                lisp_print(*a.cell.car);
+                            if(a.cell.cdr != 0)
+                                lisp_print(*a.cell.cdr);
+                            printf(")");
+                        }
                         if (a.t == LIST) {
                             printf("(");
-                            for(int j = 0 ; j < a.list.cnt ; j++){
-                                lisp_print(a.list.values[j]);
+                            for(int i = 0 ; i < a.list.cnt ; i++){
+                                lisp_print(a.list.values[i]);
                             }
-                            printf(") ");
+                            printf(")");
                         }
                     }
                     
@@ -313,6 +324,14 @@ public class RuntimeGenerator {
                             if (a.z.value == b.z.value) {
                                 return MakeBoolean(1);
                             } else {
+                                return MakeBoolean(0);
+                            }
+                        }
+                        if (a.t == CELL && b.t == CELL) {
+                            if(a.cell.car == 0 && a.cell.cdr == 0 && b.cell.car == 0 && b.cell.cdr == 0){
+                                return MakeBoolean(1);
+                            }
+                            else {
                                 return MakeBoolean(0);
                             }
                         }

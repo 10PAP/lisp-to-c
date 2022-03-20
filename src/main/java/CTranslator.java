@@ -3,6 +3,8 @@ import common.RuntimeGenerator;
 import gen.LispParser;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CTranslator implements Translator {
@@ -31,6 +33,7 @@ public class CTranslator implements Translator {
         if (form.simple_form() != null) {
             // application happens right here...
             LispParser.FormContext firstForm = form.simple_form().form(0);
+            List<String> reserved_words = Arrays.asList("+", "-", "*", "/", "mod", "inc", "dec", "print", "read", ">", "<", "=", "or", "and", "not", "list", "if", "cons", "car", "cdr");
             if (firstForm.IDENTIFIER() != null) {
                 // special forms
                 switch (firstForm.IDENTIFIER().getText()) {
@@ -61,6 +64,15 @@ public class CTranslator implements Translator {
                         List<LispParser.FormContext> args = form.simple_form().form();
                         args.remove(0);
                         out.append(translateIf(args)).append(")");
+                        return out + delimiter;
+                    }
+                    case "cons" -> {
+                        var conses = form.simple_form().form();
+                        out.append("NewCell(");
+                    }
+                    case "car", "cdr" -> {
+                        var cons = form.simple_form().form().get(1);
+                        out.append("(*(").append(translateForm(cons, "")).append(".cell.").append(firstForm.IDENTIFIER()).append("))");
                         return out + delimiter;
                     }
                     default -> out.append(firstForm.IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
