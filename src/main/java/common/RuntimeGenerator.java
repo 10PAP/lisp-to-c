@@ -100,7 +100,7 @@ public class RuntimeGenerator {
                     Value lisp_inc(Value a);
                     Value lisp_dec(Value a);
                     
-                    void lisp_print(Value a);
+                    void lisp_print_0(Value a);
                     Value lisp_read(void);
                     
                     Value lisp_gt(Value a, Value b);
@@ -270,6 +270,11 @@ public class RuntimeGenerator {
                         }
                     }
                     
+                    void lisp_print_0(Value a) {
+                        lisp_print(a);
+                        printf("\\n");
+                    }
+                    
                     Value lisp_read(void) {
                         char buff[100];
                         fgets(buff, 100, stdin);
@@ -371,7 +376,7 @@ public class RuntimeGenerator {
                         return *((Value *) NULL);
                     }
                     
-                    // 
+                    //
                     """);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

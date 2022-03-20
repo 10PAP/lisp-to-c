@@ -26,6 +26,7 @@ public class LispWalker extends LispBaseListener {
                LispParser.Fun_definitionContext fun_definition = top_level_form.fun_definition();
                String symbol_name = fun_definition.IDENTIFIER().getText();
                String c_function_name = symbol_name + "0";
+               cTranslator.updateGlobalScope(c_function_name);
                cTranslator.translateFunctionDefinition(c_function_name, symbol_name, fun_definition.decl().IDENTIFIER(), fun_definition.form());
            }
            else if (top_level_form.include() != null) {

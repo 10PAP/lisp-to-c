@@ -6,10 +6,19 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CTranslator implements Translator {
     private final StringBuilder initializer;
     private final List<StringBuilder> functions;
+
+    private final ArrayList<String> globalScope;
+
+    // arch: try to make it private
+    public void updateGlobalScope(String funName) {
+        globalScope.add(funName);
+        System.out.println("Global function: " + funName);
+    }
 
     public String translateForm(LispParser.FormContext form, String delimiter) {
         StringBuilder out = new StringBuilder();
@@ -44,7 +53,7 @@ public class CTranslator implements Translator {
                     case "mod" -> out.append("lisp_mod").append("(");
                     case "inc" -> out.append("lisp_inc").append("(");
                     case "dec" -> out.append("lisp_dec").append("(");
-                    case "print" -> out.append("lisp_print").append("(");
+                    case "print" -> out.append("lisp_print_0").append("(");
                     case "read" -> out.append("lisp_read").append("(");
                     case ">" -> out.append("lisp_gt").append("(");
                     case "<" -> out.append("lisp_lt").append("(");
@@ -75,24 +84,26 @@ public class CTranslator implements Translator {
                         out.append("(*(").append(translateForm(cons, "")).append(".cell.").append(firstForm.IDENTIFIER()).append("))");
                         return out + delimiter;
                     }
-                    default -> out.append(firstForm.IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
+                    default -> {
+                        if (globalScope.contains(firstForm.IDENTIFIER().getText() + "0")) {
+                            out.append(firstForm.IDENTIFIER()).append("0").append("(");
+                        } else {
+                            List<LispParser.FormContext> args = form.simple_form().form().stream().
+                                    skip(1).collect(Collectors.toList());
+                            translateApplication(firstForm.IDENTIFIER().getText(), args, out);
+                        }
+                    }
                 }
             }
             else {
                 String applicator = translateForm(firstForm, "");
-                int num_of_args = form.simple_form().form().size() - 1;
-                StringBuilder dirty_hack = new StringBuilder("(Value (*)(");
-                String prefix = "";
-                for(int i = 0 ; i < num_of_args ; i++){
-                    dirty_hack.append(prefix).append("Value");
-                    prefix = ", ";
-                }
-                dirty_hack.append("))");
-                out.append("(").append(dirty_hack).append("(").append(applicator).append(").clo.lam)").append("(");
+                List<LispParser.FormContext> args = form.simple_form().form().stream().
+                        skip(1).collect(Collectors.toList());
+                translateApplication(applicator, args, out);
             }
             StringBuilder args = new StringBuilder();
             String prefix = "";
-            for(var arg : form.simple_form().form().stream().skip(1).toList()){
+            for(var arg : form.simple_form().form().stream().skip(1).collect(Collectors.toList())){
                 args.append(prefix);
                 args.append(translateForm(arg, ""));
                 prefix = ", ";
@@ -107,6 +118,18 @@ public class CTranslator implements Translator {
             out.append(symbol_name);
         }
         return out + delimiter;
+    }
+
+    private void translateApplication(String applicator, List<LispParser.FormContext> args, StringBuilder out) {
+        int num_of_args = args.size();
+        StringBuilder dirty_hack = new StringBuilder("(Value (*)(");
+        String prefix = "";
+        for(int i = 0 ; i < num_of_args ; i++){
+            dirty_hack.append(prefix).append("Value");
+            prefix = ", ";
+        }
+        dirty_hack.append("))");
+        out.append("(").append(dirty_hack).append("(").append(applicator).append(").clo.lam)").append("(");
     }
 
     public void translateFunctionDefinition(String c_function_name, String symbol_name, List<TerminalNode> arg_names, LispParser.FormContext fun_body) {
@@ -138,6 +161,7 @@ public class CTranslator implements Translator {
         headers.append("#include \"runtime.h\"\n");
         this.initializer = initializer;
         this.functions = functions;
+        globalScope = new ArrayList<>();
 
         RuntimeGenerator.generateHeader();
         RuntimeGenerator.generateCFile();
