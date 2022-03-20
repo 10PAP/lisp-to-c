@@ -1,13 +1,15 @@
 import common.FunctionIdGenerator;
 import common.RuntimeGenerator;
 import gen.LispParser;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CTranslator implements Translator {
+    private final StringBuilder initializer;
+    private final List<StringBuilder> functions;
 
-    public String translateForm(LispParser.FormContext form, String delimeter) {
+    public String translateForm(LispParser.FormContext form, String delimiter) {
         StringBuilder out = new StringBuilder();
         if (form.IDENTIFIER() != null) {
             String ident = form.IDENTIFIER().getText();
@@ -59,9 +61,9 @@ public class CTranslator implements Translator {
                         List<LispParser.FormContext> args = form.simple_form().form();
                         args.remove(0);
                         out.append(translateIf(args)).append(")");
-                        return out + delimeter;
+                        return out + delimiter;
                     }
-                    default -> out.append(firstForm.IDENTIFIER()).append(FunctionIdGenerator.getID()).append("("); // подразумевается, что сейчас есть только глобальный scope!!!
+                    default -> out.append(firstForm.IDENTIFIER()).append("0").append("("); // подразумевается, что сейчас есть только глобальный scope!!!
                 }
             }
             else {
@@ -86,7 +88,30 @@ public class CTranslator implements Translator {
             out.append(args);
             out.append(")");
         }
-        return out + delimeter;
+        if (form.lambda_form() != null) {
+            // it's like function definition but better
+            String symbol_name = "fn" + FunctionIdGenerator.createID();
+            translateFunctionDefinition(symbol_name + "0", symbol_name, form.lambda_form().decl().IDENTIFIER(), form.lambda_form().form());
+            out.append(symbol_name);
+        }
+        return out + delimiter;
+    }
+
+    public void translateFunctionDefinition(String c_function_name, String symbol_name, List<TerminalNode> arg_names, LispParser.FormContext fun_body) {
+        StringBuilder c_function_definition = new StringBuilder();
+        // generate a new function itself
+        c_function_definition.append("Value ").append(c_function_name).append("(");
+        String prefix = "";
+        for(var arg : arg_names) {
+            c_function_definition.append(prefix);
+            c_function_definition.append("Value ").append(arg.getText());
+            prefix = ", ";
+        }
+        c_function_definition.append(") {\n" + "\treturn ").append(this.translateForm(fun_body, ";\n}\n"));
+        // generate Value-typed variable with pointer to new function inside
+        c_function_definition.append("Value ").append(symbol_name).append(";\n");
+        initializer.append("\t").append(symbol_name).append(" = MakePrimitive(&").append(c_function_name).append(");\n");
+        functions.add(c_function_definition);
     }
 
     private String translateIf(List<LispParser.FormContext> args) {
@@ -97,8 +122,10 @@ public class CTranslator implements Translator {
         return out;
     }
 
-    CTranslator(StringBuilder headers) {
+    CTranslator(StringBuilder headers, StringBuilder initializer, List<StringBuilder> functions) {
         headers.append("#include \"runtime.h\"\n");
+        this.initializer = initializer;
+        this.functions = functions;
 
         RuntimeGenerator.generateHeader();
         RuntimeGenerator.generateCFile();
