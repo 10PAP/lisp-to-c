@@ -30,6 +30,7 @@ public class CTranslator implements Translator {
                 out.append("MakeBoolean(0)");
             }
             else {
+                // TODO: идентификатор из какого скоупа?
                 out.append(ident);
             }
         }
@@ -85,6 +86,7 @@ public class CTranslator implements Translator {
                         return out + delimiter;
                     }
                     default -> {
+                        // TODO: функция-идентификатор из какого скоупа?
                         if (globalScope.contains(firstForm.IDENTIFIER().getText() + "0")) {
                             out.append(firstForm.IDENTIFIER()).append("0").append("(");
                         } else {
@@ -116,6 +118,17 @@ public class CTranslator implements Translator {
             String symbol_name = "fn" + FunctionIdGenerator.createID();
             translateFunctionDefinition(symbol_name + "0", symbol_name, form.lambda_form().decl().IDENTIFIER(), form.lambda_form().form());
             out.append(symbol_name);
+        }
+        if (form.let_form() != null){
+            String ident = form.let_form().IDENTIFIER().getText();
+            var ident_body = form.let_form().form(0);
+            var let_body = form.let_form().form(1);
+            // добавить имя ident в скоуп, чтобы по нему можно было получить ident_body
+            var c_ident_definition = "Value " + ident + ";";
+            var c_ident_initial = "\t" + ident + " = " + translateForm(ident_body, "") + ";\n";
+            functions.add(new StringBuilder(c_ident_definition));
+            initializer.append(c_ident_initial);
+            out.append(translateForm(let_body, ""));
         }
         return out + delimiter;
     }

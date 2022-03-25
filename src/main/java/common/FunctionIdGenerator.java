@@ -1,7 +1,5 @@
 package common;
 
-//TODO: починить id генератор
-
 public class FunctionIdGenerator {
     private static long idCounter = 0;
     public static synchronized String createID() {

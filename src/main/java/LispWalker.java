@@ -42,9 +42,9 @@ public class LispWalker extends LispBaseListener {
             out.println("Value nil;\n");
             functions.forEach(out::println);
             initializer.append("""
-                                    nil.cell.t = CELL;
-                                    nil.cell.car = 0;
-                                    nil.cell.cdr = 0;
+                                    \tnil.cell.t = CELL;
+                                    \tnil.cell.car = 0;
+                                    \tnil.cell.cdr = 0;
                                     """);
             out.println("void init(){\n" + initializer + "}\n");
             out.println("int main() {\n\tinit();\n" + mainBody + "}\n");
