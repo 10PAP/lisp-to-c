@@ -32,4 +32,4 @@
 
 (print
     (let [funny_func (fn [n] (+ n 10))]
-    (let [ugly_arg 10] (funny_func ugly_arg))))
+      (let [ugly_arg 10] (funny_func ugly_arg))))

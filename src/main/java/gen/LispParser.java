@@ -17,36 +17,36 @@ public class LispParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, IDENTIFIER=8, 
-		PLUS=9, MINUS=10, MULT=11, DIV=12, LOW=13, EQ=14, ORDER=15, OP=16, CP=17, 
-		OSP=18, CSP=19, STRING=20, HEADER=21, NUMBER=22, WHITESPACE=23, DIGIT=24, 
-		LETTER=25, LOWER=26, UPPER=27;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, IDENTIFIER=11, PLUS=12, MINUS=13, MULT=14, DIV=15, LOW=16, EQ=17, 
+		ORDER=18, OP=19, CP=20, OSP=21, CSP=22, STRING=23, HEADER=24, NUMBER=25, 
+		WHITESPACE=26, DIGIT=27, LETTER=28, LOWER=29, UPPER=30;
 	public static final int
 		RULE_program = 0, RULE_top_level_from = 1, RULE_include = 2, RULE_fun_definition = 3, 
-		RULE_form = 4, RULE_lambda_form = 5, RULE_let_form = 6, RULE_simple_form = 7, 
-		RULE_decl = 8;
+		RULE_macro_definition = 4, RULE_form = 5, RULE_lambda_form = 6, RULE_let_form = 7, 
+		RULE_simple_form = 8, RULE_decl = 9;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "top_level_from", "include", "fun_definition", "form", "lambda_form", 
-			"let_form", "simple_form", "decl"
+			"program", "top_level_from", "include", "fun_definition", "macro_definition", 
+			"form", "lambda_form", "let_form", "simple_form", "decl"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'include'", "'defn'", "'DEFN'", "'fn'", "'FN'", "'let'", "'LET'", 
-			null, "'+'", "'-'", "'*'", "'/'", "'_'", "'='", null, "'('", "')'", "'['", 
-			"']'"
+			null, "'include'", "'defn'", "'DEFN'", "'defmacro'", "'DEFMACRO'", "'`'", 
+			"'fn'", "'FN'", "'let'", "'LET'", null, "'+'", "'-'", "'*'", "'/'", "'_'", 
+			"'='", null, "'('", "')'", "'['", "']'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, "IDENTIFIER", "PLUS", 
-			"MINUS", "MULT", "DIV", "LOW", "EQ", "ORDER", "OP", "CP", "OSP", "CSP", 
-			"STRING", "HEADER", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", "LOWER", 
-			"UPPER"
+			null, null, null, null, null, null, null, null, null, null, null, "IDENTIFIER", 
+			"PLUS", "MINUS", "MULT", "DIV", "LOW", "EQ", "ORDER", "OP", "CP", "OSP", 
+			"CSP", "STRING", "HEADER", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", 
+			"LOWER", "UPPER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -134,21 +134,21 @@ public class LispParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(21);
+			setState(23);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IDENTIFIER) | (1L << OP) | (1L << STRING) | (1L << NUMBER))) != 0)) {
 				{
 				{
-				setState(18);
+				setState(20);
 				top_level_from();
 				}
 				}
-				setState(23);
+				setState(25);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(24);
+			setState(26);
 			match(EOF);
 			}
 		}
@@ -169,6 +169,9 @@ public class LispParser extends Parser {
 		}
 		public Fun_definitionContext fun_definition() {
 			return getRuleContext(Fun_definitionContext.class,0);
+		}
+		public Macro_definitionContext macro_definition() {
+			return getRuleContext(Macro_definitionContext.class,0);
 		}
 		public IncludeContext include() {
 			return getRuleContext(IncludeContext.class,0);
@@ -196,27 +199,34 @@ public class LispParser extends Parser {
 		Top_level_fromContext _localctx = new Top_level_fromContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_top_level_from);
 		try {
-			setState(29);
+			setState(32);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(26);
+				setState(28);
 				form();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(27);
+				setState(29);
 				fun_definition();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(28);
+				setState(30);
+				macro_definition();
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(31);
 				include();
 				}
 				break;
@@ -262,13 +272,13 @@ public class LispParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(31);
-			match(OP);
-			setState(32);
-			match(T__0);
-			setState(33);
-			match(HEADER);
 			setState(34);
+			match(OP);
+			setState(35);
+			match(T__0);
+			setState(36);
+			match(HEADER);
+			setState(37);
 			match(CP);
 			}
 		}
@@ -319,9 +329,9 @@ public class LispParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(36);
+			setState(39);
 			match(OP);
-			setState(37);
+			setState(40);
 			_la = _input.LA(1);
 			if ( !(_la==T__1 || _la==T__2) ) {
 			_errHandler.recoverInline(this);
@@ -331,13 +341,84 @@ public class LispParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(38);
-			match(IDENTIFIER);
-			setState(39);
-			decl();
-			setState(40);
-			form();
 			setState(41);
+			match(IDENTIFIER);
+			setState(42);
+			decl();
+			setState(43);
+			form();
+			setState(44);
+			match(CP);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Macro_definitionContext extends ParserRuleContext {
+		public TerminalNode OP() { return getToken(LispParser.OP, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(LispParser.IDENTIFIER, 0); }
+		public DeclContext decl() {
+			return getRuleContext(DeclContext.class,0);
+		}
+		public FormContext form() {
+			return getRuleContext(FormContext.class,0);
+		}
+		public TerminalNode CP() { return getToken(LispParser.CP, 0); }
+		public Macro_definitionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_macro_definition; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof LispListener ) ((LispListener)listener).enterMacro_definition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof LispListener ) ((LispListener)listener).exitMacro_definition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LispVisitor ) return ((LispVisitor<? extends T>)visitor).visitMacro_definition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Macro_definitionContext macro_definition() throws RecognitionException {
+		Macro_definitionContext _localctx = new Macro_definitionContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_macro_definition);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(46);
+			match(OP);
+			setState(47);
+			_la = _input.LA(1);
+			if ( !(_la==T__3 || _la==T__4) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			setState(48);
+			match(IDENTIFIER);
+			setState(49);
+			decl();
+			setState(50);
+			match(T__5);
+			setState(51);
+			form();
+			setState(52);
 			match(CP);
 			}
 		}
@@ -388,31 +469,31 @@ public class LispParser extends Parser {
 
 	public final FormContext form() throws RecognitionException {
 		FormContext _localctx = new FormContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_form);
+		enterRule(_localctx, 10, RULE_form);
 		try {
-			setState(54);
+			setState(65);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case OP:
 				enterOuterAlt(_localctx, 1);
 				{
 				{
-				setState(43);
+				setState(54);
 				match(OP);
-				setState(47);
+				setState(58);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
-				case T__3:
-				case T__4:
+				case T__6:
+				case T__7:
 					{
-					setState(44);
+					setState(55);
 					lambda_form();
 					}
 					break;
-				case T__5:
-				case T__6:
+				case T__8:
+				case T__9:
 					{
-					setState(45);
+					setState(56);
 					let_form();
 					}
 					break;
@@ -421,14 +502,14 @@ public class LispParser extends Parser {
 				case STRING:
 				case NUMBER:
 					{
-					setState(46);
+					setState(57);
 					simple_form();
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(49);
+				setState(60);
 				match(CP);
 				}
 				}
@@ -436,21 +517,21 @@ public class LispParser extends Parser {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(51);
+				setState(62);
 				match(IDENTIFIER);
 				}
 				break;
 			case STRING:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(52);
+				setState(63);
 				match(STRING);
 				}
 				break;
 			case NUMBER:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(53);
+				setState(64);
 				match(NUMBER);
 				}
 				break;
@@ -497,14 +578,14 @@ public class LispParser extends Parser {
 
 	public final Lambda_formContext lambda_form() throws RecognitionException {
 		Lambda_formContext _localctx = new Lambda_formContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_lambda_form);
+		enterRule(_localctx, 12, RULE_lambda_form);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(56);
+			setState(67);
 			_la = _input.LA(1);
-			if ( !(_la==T__3 || _la==T__4) ) {
+			if ( !(_la==T__6 || _la==T__7) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -512,9 +593,9 @@ public class LispParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(57);
+			setState(68);
 			decl();
-			setState(58);
+			setState(69);
 			form();
 			}
 		}
@@ -560,14 +641,14 @@ public class LispParser extends Parser {
 
 	public final Let_formContext let_form() throws RecognitionException {
 		Let_formContext _localctx = new Let_formContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_let_form);
+		enterRule(_localctx, 14, RULE_let_form);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(60);
+			setState(71);
 			_la = _input.LA(1);
-			if ( !(_la==T__5 || _la==T__6) ) {
+			if ( !(_la==T__8 || _la==T__9) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -575,15 +656,15 @@ public class LispParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(61);
+			setState(72);
 			match(OSP);
-			setState(62);
+			setState(73);
 			match(IDENTIFIER);
-			setState(63);
+			setState(74);
 			form();
-			setState(64);
+			setState(75);
 			match(CSP);
-			setState(65);
+			setState(76);
 			form();
 			}
 		}
@@ -626,22 +707,22 @@ public class LispParser extends Parser {
 
 	public final Simple_formContext simple_form() throws RecognitionException {
 		Simple_formContext _localctx = new Simple_formContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_simple_form);
+		enterRule(_localctx, 16, RULE_simple_form);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68); 
+			setState(79); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(67);
+				setState(78);
 				form();
 				}
 				}
-				setState(70); 
+				setState(81); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IDENTIFIER) | (1L << OP) | (1L << STRING) | (1L << NUMBER))) != 0) );
@@ -686,28 +767,28 @@ public class LispParser extends Parser {
 
 	public final DeclContext decl() throws RecognitionException {
 		DeclContext _localctx = new DeclContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_decl);
+		enterRule(_localctx, 18, RULE_decl);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(72);
+			setState(83);
 			match(OSP);
-			setState(76);
+			setState(87);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==IDENTIFIER) {
 				{
 				{
-				setState(73);
+				setState(84);
 				match(IDENTIFIER);
 				}
 				}
-				setState(78);
+				setState(89);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(79);
+			setState(90);
 			match(CSP);
 			}
 		}
@@ -723,27 +804,30 @@ public class LispParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\35T\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\7\2\26"+
-		"\n\2\f\2\16\2\31\13\2\3\2\3\2\3\3\3\3\3\3\5\3 \n\3\3\4\3\4\3\4\3\4\3\4"+
-		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\5\6\62\n\6\3\6\3\6\3\6\3"+
-		"\6\3\6\5\69\n\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\6\tG\n"+
-		"\t\r\t\16\tH\3\n\3\n\7\nM\n\n\f\n\16\nP\13\n\3\n\3\n\3\n\2\2\13\2\4\6"+
-		"\b\n\f\16\20\22\2\5\3\2\4\5\3\2\6\7\3\2\b\t\2T\2\27\3\2\2\2\4\37\3\2\2"+
-		"\2\6!\3\2\2\2\b&\3\2\2\2\n8\3\2\2\2\f:\3\2\2\2\16>\3\2\2\2\20F\3\2\2\2"+
-		"\22J\3\2\2\2\24\26\5\4\3\2\25\24\3\2\2\2\26\31\3\2\2\2\27\25\3\2\2\2\27"+
-		"\30\3\2\2\2\30\32\3\2\2\2\31\27\3\2\2\2\32\33\7\2\2\3\33\3\3\2\2\2\34"+
-		" \5\n\6\2\35 \5\b\5\2\36 \5\6\4\2\37\34\3\2\2\2\37\35\3\2\2\2\37\36\3"+
-		"\2\2\2 \5\3\2\2\2!\"\7\22\2\2\"#\7\3\2\2#$\7\27\2\2$%\7\23\2\2%\7\3\2"+
-		"\2\2&\'\7\22\2\2\'(\t\2\2\2()\7\n\2\2)*\5\22\n\2*+\5\n\6\2+,\7\23\2\2"+
-		",\t\3\2\2\2-\61\7\22\2\2.\62\5\f\7\2/\62\5\16\b\2\60\62\5\20\t\2\61.\3"+
-		"\2\2\2\61/\3\2\2\2\61\60\3\2\2\2\62\63\3\2\2\2\63\64\7\23\2\2\649\3\2"+
-		"\2\2\659\7\n\2\2\669\7\26\2\2\679\7\30\2\28-\3\2\2\28\65\3\2\2\28\66\3"+
-		"\2\2\28\67\3\2\2\29\13\3\2\2\2:;\t\3\2\2;<\5\22\n\2<=\5\n\6\2=\r\3\2\2"+
-		"\2>?\t\4\2\2?@\7\24\2\2@A\7\n\2\2AB\5\n\6\2BC\7\25\2\2CD\5\n\6\2D\17\3"+
-		"\2\2\2EG\5\n\6\2FE\3\2\2\2GH\3\2\2\2HF\3\2\2\2HI\3\2\2\2I\21\3\2\2\2J"+
-		"N\7\24\2\2KM\7\n\2\2LK\3\2\2\2MP\3\2\2\2NL\3\2\2\2NO\3\2\2\2OQ\3\2\2\2"+
-		"PN\3\2\2\2QR\7\25\2\2R\23\3\2\2\2\b\27\37\618HN";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 _\4\2\t\2\4\3\t\3"+
+		"\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3\2"+
+		"\7\2\30\n\2\f\2\16\2\33\13\2\3\2\3\2\3\3\3\3\3\3\3\3\5\3#\n\3\3\4\3\4"+
+		"\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3"+
+		"\6\3\7\3\7\3\7\3\7\5\7=\n\7\3\7\3\7\3\7\3\7\3\7\5\7D\n\7\3\b\3\b\3\b\3"+
+		"\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\n\6\nR\n\n\r\n\16\nS\3\13\3\13\7\13X"+
+		"\n\13\f\13\16\13[\13\13\3\13\3\13\3\13\2\2\f\2\4\6\b\n\f\16\20\22\24\2"+
+		"\6\3\2\4\5\3\2\6\7\3\2\t\n\3\2\13\f\2_\2\31\3\2\2\2\4\"\3\2\2\2\6$\3\2"+
+		"\2\2\b)\3\2\2\2\n\60\3\2\2\2\fC\3\2\2\2\16E\3\2\2\2\20I\3\2\2\2\22Q\3"+
+		"\2\2\2\24U\3\2\2\2\26\30\5\4\3\2\27\26\3\2\2\2\30\33\3\2\2\2\31\27\3\2"+
+		"\2\2\31\32\3\2\2\2\32\34\3\2\2\2\33\31\3\2\2\2\34\35\7\2\2\3\35\3\3\2"+
+		"\2\2\36#\5\f\7\2\37#\5\b\5\2 #\5\n\6\2!#\5\6\4\2\"\36\3\2\2\2\"\37\3\2"+
+		"\2\2\" \3\2\2\2\"!\3\2\2\2#\5\3\2\2\2$%\7\25\2\2%&\7\3\2\2&\'\7\32\2\2"+
+		"\'(\7\26\2\2(\7\3\2\2\2)*\7\25\2\2*+\t\2\2\2+,\7\r\2\2,-\5\24\13\2-.\5"+
+		"\f\7\2./\7\26\2\2/\t\3\2\2\2\60\61\7\25\2\2\61\62\t\3\2\2\62\63\7\r\2"+
+		"\2\63\64\5\24\13\2\64\65\7\b\2\2\65\66\5\f\7\2\66\67\7\26\2\2\67\13\3"+
+		"\2\2\28<\7\25\2\29=\5\16\b\2:=\5\20\t\2;=\5\22\n\2<9\3\2\2\2<:\3\2\2\2"+
+		"<;\3\2\2\2=>\3\2\2\2>?\7\26\2\2?D\3\2\2\2@D\7\r\2\2AD\7\31\2\2BD\7\33"+
+		"\2\2C8\3\2\2\2C@\3\2\2\2CA\3\2\2\2CB\3\2\2\2D\r\3\2\2\2EF\t\4\2\2FG\5"+
+		"\24\13\2GH\5\f\7\2H\17\3\2\2\2IJ\t\5\2\2JK\7\27\2\2KL\7\r\2\2LM\5\f\7"+
+		"\2MN\7\30\2\2NO\5\f\7\2O\21\3\2\2\2PR\5\f\7\2QP\3\2\2\2RS\3\2\2\2SQ\3"+
+		"\2\2\2ST\3\2\2\2T\23\3\2\2\2UY\7\27\2\2VX\7\r\2\2WV\3\2\2\2X[\3\2\2\2"+
+		"YW\3\2\2\2YZ\3\2\2\2Z\\\3\2\2\2[Y\3\2\2\2\\]\7\30\2\2]\25\3\2\2\2\b\31"+
+		"\"<CSY";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
