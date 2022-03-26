@@ -33,3 +33,9 @@
 (print
     (let [funny_func (fn [n] (+ n 10))]
       (let [ugly_arg 10] (funny_func ugly_arg))))
+
+(let [testList1 (cons 1 (cons 15 (cons 8 (cons 10 (cons 3 nil)))))]
+  (print (snd testList1)))
+
+(print
+  (max (cons 2 (cons 149 (cons 999 (cons 54 (cons 11 nil)))))))

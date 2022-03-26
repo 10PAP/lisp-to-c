@@ -27,14 +27,30 @@ public class Main {
         String preparedProg = Prelude.getPrelude() +
                 program;
 
+        /*
+         * PREPROCESSING STAGE
+         */
         LispLexer lexer = new LispLexer(CharStreams.fromString(preparedProg));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-        LispParser parser = new LispParser(tokens);
-        ParseTree tree = parser.program();
+        LispParser parser1 = new LispParser(tokens);
+        ParseTree tree = parser1.program();
+
+        String preprocessedProgram = (new Preprocessor()).visit(tree);
+
+        System.out.println(preprocessedProgram);
+
+        /*
+         * TRANSLATION STAGE
+         */
+        LispLexer lexer2 = new LispLexer(CharStreams.fromString(preprocessedProgram));
+        CommonTokenStream tokens2 = new CommonTokenStream(lexer2);
+
+        LispParser parser2 = new LispParser(tokens2);
+        ParseTree preprocessedTree = parser2.program();
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(new LispWalker(), tree);
+        walker.walk(new LispWalker(), preprocessedTree);
     }
 
 }

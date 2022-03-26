@@ -14,3 +14,14 @@
     (if (= nil xs)
         acc
         (fold bin (bin (car xs) acc) (cdr xs))))
+
+
+(defmacro fst [xs] `(car xs))
+
+(defmacro snd [xs] `(car (cdr xs)))
+
+(defmacro max [l]
+    `(fold
+      (fn [x acc] (if (> x acc) x acc))
+      0
+      l))
