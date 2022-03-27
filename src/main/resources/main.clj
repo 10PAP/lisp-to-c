@@ -14,6 +14,8 @@
     1
     (+ (fibonacci (- N 1)) (fibonacci (- N 2)))))
 
+(print (+ (proxy (nul)) 2))
+
 (print
   (map
    (fn [n] (+ n 10))
@@ -31,5 +33,5 @@
    (cons 1 (cons 15 (cons 8 (cons 10 (cons 3 nil)))))))
 
 (print
-    (let [funny_func (fn [n] (+ n 10))]
+    (let [funny_func (fn [n] (+ n 17))]
     (let [ugly_arg 10] (funny_func ugly_arg))))
