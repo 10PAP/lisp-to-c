@@ -64,6 +64,18 @@ public class LispBaseListener implements LispListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMacro_definition(LispParser.Macro_definitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMacro_definition(LispParser.Macro_definitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterForm(LispParser.FormContext ctx) { }
 	/**
 	 * {@inheritDoc}

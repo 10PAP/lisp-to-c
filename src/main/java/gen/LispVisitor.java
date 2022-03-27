@@ -35,6 +35,12 @@ public interface LispVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFun_definition(LispParser.Fun_definitionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LispParser#macro_definition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMacro_definition(LispParser.Macro_definitionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LispParser#form}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -1,11 +1,13 @@
 import gen.LispBaseListener;
 import gen.LispParser;
 import common.FunctionIdGenerator;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LispWalker extends LispBaseListener {
 
@@ -14,6 +16,7 @@ public class LispWalker extends LispBaseListener {
     StringBuilder initializer = new StringBuilder();
     List<StringBuilder> functions = new ArrayList<>();
     CTranslator cTranslator = new CTranslator(headers, initializer, functions);
+
 
     @Override
     public void enterProgram(LispParser.ProgramContext ctx) {
@@ -35,7 +38,6 @@ public class LispWalker extends LispBaseListener {
         }
     }
 
-
     public void exitProgram(LispParser.ProgramContext ctx) {
         try (PrintWriter out = new PrintWriter("out/main.c")) {
             out.println(headers.toString());
@@ -51,21 +53,5 @@ public class LispWalker extends LispBaseListener {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void enterTop_level_from(LispParser.Top_level_fromContext ctx) {
-    }
-
-    @Override
-    public void enterFun_definition(LispParser.Fun_definitionContext ctx) {
-    }
-
-    @Override
-    public void enterForm(LispParser.FormContext ctx){
-    }
-
-    @Override
-    public void enterSimple_form(LispParser.Simple_formContext ctx) {
     }
 }

@@ -48,6 +48,16 @@ public interface LispListener extends ParseTreeListener {
 	 */
 	void exitFun_definition(LispParser.Fun_definitionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LispParser#macro_definition}.
+	 * @param ctx the parse tree
+	 */
+	void enterMacro_definition(LispParser.Macro_definitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LispParser#macro_definition}.
+	 * @param ctx the parse tree
+	 */
+	void exitMacro_definition(LispParser.Macro_definitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LispParser#form}.
 	 * @param ctx the parse tree
 	 */
