@@ -27,13 +27,16 @@ public class ByteLispWalker extends LispBaseListener {
             pool.insertClassPath(new ClassClassPath(Class.forName("Value")));
             pool.insertClassPath(new ClassClassPath(Class.forName("VInt")));
             pool.insertClassPath(new ClassClassPath(Class.forName("VString")));
+            pool.insertClassPath(new ClassClassPath(Class.forName("VBool")));
 
             CtClass valueClass = pool.get("Value");
             CtClass vintClass = pool.get("VInt");
             CtClass vstringClass = pool.get("VString");
+            CtClass vboolClass = pool.get("VBool");
             valueClass.writeFile("out/");
             vintClass.writeFile("out/");
             vstringClass.writeFile("out/");
+            vboolClass.writeFile("out/");
 
             runtimeClass = pool.get("Runtime");
         } catch (NotFoundException | ClassNotFoundException | CannotCompileException | IOException e) {

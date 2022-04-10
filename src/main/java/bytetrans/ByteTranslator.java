@@ -14,8 +14,6 @@ public class ByteTranslator implements common.Translator {
     private final List<StringBuilder> functions;
     private final ArrayList<String> globalScope;
 
-    private final String postfix = "g";
-
     ByteTranslator(StringBuilder initializer, List<StringBuilder> functions) {
         this.initializer = initializer;
         this.functions = functions;
@@ -118,10 +116,10 @@ public class ByteTranslator implements common.Translator {
             case "read" -> out.append("lisp_read").append("(");
             case "if" -> {
                 out.append("(");
-                String if_body = "(" + translateForm(args.get(0), "") + ") == 1" + " ? " +
+                String if_body = translateForm(args.get(0), "") + ").getValue().booleanValue()" + " ? " +
                         translateForm(args.get(1), "") + " : " +
                         translateForm(args.get(2), "");
-                out.append(if_body).append(")");
+                out.append(if_body);
                 return out + delimiter;
             }
             default -> {
@@ -149,9 +147,9 @@ public class ByteTranslator implements common.Translator {
     public void translateIdentifier(String lisp_ident, StringBuilder out) {
         // TODO boolean
         if (lisp_ident.equals("true")) {
-            out.append("MakeBoolean(1)");
+            out.append("new VBool(Boolean.TRUE)");
         } else if (lisp_ident.equals("false")) {
-            out.append("MakeBoolean(0)");
+            out.append("new VBool(Boolean.FALSE)");
         }
         else {
             out.append(lisp_ident);
