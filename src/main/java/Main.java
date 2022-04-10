@@ -18,7 +18,7 @@ public class Main {
 
         String program = null;
         try {
-            program = Files.readString(Paths.get("src/main/resources/main.clj"), StandardCharsets.US_ASCII);
+            program = Files.readString(Paths.get(args[0]), StandardCharsets.US_ASCII);
         } catch (IOException e) {
             e.printStackTrace();
         }

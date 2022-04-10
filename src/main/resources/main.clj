@@ -6,15 +6,18 @@
 (defn factorial [n]
   (fac_helper n 1))
 
-(defn proxy [f] f)
-(defn nul [] 2)
-
 (defn fibonacci [N]
   (if (or (= N 0) (= N 1))
     1
     (+ (fibonacci (- N 1)) (fibonacci (- N 2)))))
 
-(print (+ (proxy (nul)) 2))
+(print (fibonacci 10))
+(print (factorial 10))
+
+(defn proxy [f] f)
+(defn two [] 2)
+
+(print (+ (proxy (two)) 2))
 
 (print
   (map
@@ -41,6 +44,5 @@
 
 (print
   (max (cons 2 (cons 149 (cons 999 (cons 54 (cons 11 nil)))))))
-
     (let [funny_func (fn [n] (+ n 17))]
-    (let [ugly_arg 10] (funny_func ugly_arg))))
+    (let [ugly_arg 10] (funny_func ugly_arg)))
