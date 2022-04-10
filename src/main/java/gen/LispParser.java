@@ -1,5 +1,6 @@
 // Generated from /home/charlie/GitHub/lisp-to-c/src/main/antlr4/Lisp.g4 by ANTLR 4.9.2
 package gen;
+import javassist.NotFoundException;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -114,7 +115,13 @@ public class LispParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_program; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LispListener ) ((LispListener)listener).enterProgram(this);
+			if ( listener instanceof LispListener ) {
+				try {
+					((LispListener)listener).enterProgram(this);
+				} catch (NotFoundException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {

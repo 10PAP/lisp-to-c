@@ -1,5 +1,6 @@
 // Generated from /home/charlie/GitHub/lisp-to-c/src/main/antlr4/Lisp.g4 by ANTLR 4.9.2
 package gen;
+import javassist.NotFoundException;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -11,7 +12,7 @@ public interface LispListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link LispParser#program}.
 	 * @param ctx the parse tree
 	 */
-	void enterProgram(LispParser.ProgramContext ctx);
+	void enterProgram(LispParser.ProgramContext ctx) throws NotFoundException;
 	/**
 	 * Exit a parse tree produced by {@link LispParser#program}.
 	 * @param ctx the parse tree

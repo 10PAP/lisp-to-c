@@ -1,3 +1,5 @@
+package ctrans;
+
 import common.FunctionIdGenerator;
 import common.RuntimeGenerator;
 import gen.LispParser;
@@ -7,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import common.Translator;
 
 public class CTranslator implements Translator {
     private final StringBuilder initializer;

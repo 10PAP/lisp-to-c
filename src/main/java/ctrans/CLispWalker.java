@@ -1,15 +1,14 @@
+package ctrans;
+
 import gen.LispBaseListener;
 import gen.LispParser;
-import common.FunctionIdGenerator;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class LispWalker extends LispBaseListener {
+public class CLispWalker extends LispBaseListener {
 
     StringBuilder headers = new StringBuilder();
     StringBuilder mainBody = new StringBuilder();

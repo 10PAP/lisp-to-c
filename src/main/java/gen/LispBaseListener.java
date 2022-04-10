@@ -1,6 +1,7 @@
 // Generated from /home/charlie/GitHub/lisp-to-c/src/main/antlr4/Lisp.g4 by ANTLR 4.9.2
 package gen;
 
+import javassist.NotFoundException;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -16,7 +17,7 @@ public class LispBaseListener implements LispListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterProgram(LispParser.ProgramContext ctx) { }
+	@Override public void enterProgram(LispParser.ProgramContext ctx) throws NotFoundException { }
 	/**
 	 * {@inheritDoc}
 	 *

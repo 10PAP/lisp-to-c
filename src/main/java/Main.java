@@ -1,4 +1,5 @@
-import common.Prelude;
+import bytetrans.ByteLispWalker;
+
 import gen.LispLexer;
 import gen.LispParser;
 
@@ -24,8 +25,11 @@ public class Main {
         }
 
         // добавляем встроенные функции, написанные на лиспе к программе пользователя
-        String preparedProg = Prelude.getPrelude() +
-                program;
+        /*String preparedProg = Prelude.getPrelude() +
+                program;*/
+
+        String preparedProg = program;
+        assert preparedProg != null;
 
         /*
          * PREPROCESSING STAGE
@@ -50,7 +54,7 @@ public class Main {
         ParseTree preprocessedTree = parser2.program();
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(new LispWalker(), preprocessedTree);
+        walker.walk(new ByteLispWalker(), preprocessedTree);
     }
 
 }
