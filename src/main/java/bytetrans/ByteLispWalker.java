@@ -20,7 +20,7 @@ public class ByteLispWalker extends LispBaseListener {
     ByteTranslator byteTranslator = new ByteTranslator(initializer, functions);
 
     @Override
-    public void enterProgram(LispParser.ProgramContext ctx) throws NotFoundException {
+    public void enterProgram(LispParser.ProgramContext ctx) {
 
         try {
             pool.insertClassPath(new ClassClassPath(Class.forName("Runtime")));
@@ -65,9 +65,18 @@ public class ByteLispWalker extends LispBaseListener {
         String main = "public static void main(String [] args) {\n" + mainBody.toString() + "}";
 
         try {
+
+            // add global functions into the classfile
+            for (var f : functions) {
+                System.out.println(f.toString());
+                CtMethod funcM = CtMethod.make(f.toString(), runtimeClass);
+                runtimeClass.addMethod(funcM);
+            }
+
             System.out.println(mainBody.toString());
             CtMethod mainM = CtMethod.make(main, runtimeClass);
             runtimeClass.addMethod(mainM);
+
             System.out.println(runtimeClass.getName());
         } catch (CannotCompileException e) {
             e.printStackTrace();

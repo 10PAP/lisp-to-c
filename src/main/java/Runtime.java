@@ -85,11 +85,31 @@ public class Runtime {
         return new VInt((Integer) a.getValue() - 1);
     }
 
+    public static Value lisp_eq(Value a, Value b) {
+        return new VBool(a.getValue().equals(b.getValue()));
+    }
+
+    public static Value lisp_or(Value a, Value b) {
+        return new VBool(((VBool) a).getValue().booleanValue() || ((VBool) b).getValue().booleanValue());
+    }
+
+    public static Value lisp_and(Value a, Value b) {
+        return new VBool(((VBool) a).getValue().booleanValue() && ((VBool) b).getValue().booleanValue());
+    }
+
+    public static Value lisp_not(Value a) {
+        return new VBool(!((VBool) a).getValue().booleanValue());
+    }
+
     public static void lisp_print(Value a) {
         System.out.println(a);
     }
 
-    public void test() {
+    /*public void test() {
         lisp_print((new VBool(Boolean.TRUE)).getValue() ? lisp_inc(new VInt(10)) : lisp_dec(new VInt(10)));
-    }
+    }*/
+
+    /*private static Value fac_helper0(Value n, Value acc) {
+        return ((VBool) lisp_eq(new VInt(1), n)).getValue().booleanValue() ? acc : fac_helper0(lisp_sub(n, new VInt(1)), lisp_mul(acc, n));
+    }*/
 }

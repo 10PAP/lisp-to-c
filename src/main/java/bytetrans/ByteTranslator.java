@@ -74,14 +74,10 @@ public class ByteTranslator implements common.Translator {
     }
 
     @Override
-    public void translateLambdaForm(List<TerminalNode> arg_names, LispParser.FormContext lambda_body, StringBuilder out) {
-
-    }
+    public void translateLambdaForm(List<TerminalNode> arg_names, LispParser.FormContext lambda_body, StringBuilder out) {}
 
     @Override
-    public void translateApplication(String applicator, List<LispParser.FormContext> args, StringBuilder out) {
-
-    }
+    public void translateApplication(String applicator, List<LispParser.FormContext> args, StringBuilder out) {}
 
     @Override
     public String translateSimpleForm(LispParser.FormContext firstForm, List<LispParser.FormContext> args, String delimiter, StringBuilder out) {
@@ -114,8 +110,12 @@ public class ByteTranslator implements common.Translator {
             case "dec" -> out.append("lisp_dec").append("(");
             case "print" -> out.append("lisp_print").append("(");
             case "read" -> out.append("lisp_read").append("(");
+            case "=" -> out.append("lisp_eq").append("(");
+            case "or" -> out.append("lisp_or").append("(");
+            case "and" -> out.append("lisp_and").append("(");
+            case "not" -> out.append("lisp_not").append("(");
             case "if" -> {
-                out.append("(");
+                out.append("((VBool) ");
                 String if_body = translateForm(args.get(0), "") + ").getValue().booleanValue()" + " ? " +
                         translateForm(args.get(1), "") + " : " +
                         translateForm(args.get(2), "");
@@ -157,7 +157,17 @@ public class ByteTranslator implements common.Translator {
     }
 
     @Override
-    public void translateFunctionDefinition(String c_function_name, String symbol_name, List<TerminalNode> arg_names, LispParser.FormContext fun_body) {
-
+    public void translateFunctionDefinition(String funName, String symbol_name, List<TerminalNode> arg_names, LispParser.FormContext fun_body) {
+        StringBuilder funDefinition = new StringBuilder();
+        // generate a new function itself
+        funDefinition.append("private static Value ").append(funName).append("(");
+        String prefix = "";
+        for(var arg : arg_names) {
+            funDefinition.append(prefix);
+            funDefinition.append("Value ").append(arg.getText());
+            prefix = ", ";
+        }
+        funDefinition.append(") {\n" + "\treturn ").append(this.translateForm(fun_body, ";\n}\n"));
+        functions.add(funDefinition);
     }
 }

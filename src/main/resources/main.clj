@@ -1,5 +1,5 @@
 (defn fac_helper [n acc]
-  (if (= 1 n)
+  (if (= 0 n)
     acc
     (fac_helper (- n 1) (* acc n))))
 
