@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 interface Value {
     <T> T getValue();
 }
@@ -61,6 +63,8 @@ class VBool implements Value {
 
 public class Runtime {
 
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static Value lisp_add(Value a, Value b) {
         return new VInt((Integer) a.getValue() + (Integer) b.getValue());
     }
@@ -105,11 +109,22 @@ public class Runtime {
         System.out.println(a);
     }
 
-    /*public void test() {
-        lisp_print((new VBool(Boolean.TRUE)).getValue() ? lisp_inc(new VInt(10)) : lisp_dec(new VInt(10)));
-    }*/
+    public static Value lisp_readInt() {
+        return new VInt(Integer.parseInt(scanner.next()));
+    }
 
-    /*private static Value fac_helper0(Value n, Value acc) {
-        return ((VBool) lisp_eq(new VInt(1), n)).getValue().booleanValue() ? acc : fac_helper0(lisp_sub(n, new VInt(1)), lisp_mul(acc, n));
-    }*/
+    public static Value lisp_readString() {
+        return new VString(scanner.next());
+    }
+
+    public static Value lisp_readBool() {
+        String ret = scanner.next();
+        if (ret.equals("true")) {
+            return new VBool(Boolean.TRUE);
+        }
+        if (ret.equals("false")) {
+            return new VBool(Boolean.FALSE);
+        }
+        return null;
+    }
 }

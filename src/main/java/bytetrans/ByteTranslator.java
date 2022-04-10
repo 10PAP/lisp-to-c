@@ -12,17 +12,12 @@ public class ByteTranslator implements common.Translator {
 
     private final StringBuilder initializer;
     private final List<StringBuilder> functions;
-    private final ArrayList<String> globalScope;
+    private final List<ByteLispWalker.Var> globalScope;
 
-    ByteTranslator(StringBuilder initializer, List<StringBuilder> functions) {
+    ByteTranslator(StringBuilder initializer, List<StringBuilder> functions, List<ByteLispWalker.Var>globalScope) {
         this.initializer = initializer;
         this.functions = functions;
-        globalScope = new ArrayList<>();
-    }
-
-    public void updateGlobalScope(String funName) {
-        globalScope.add(funName);
-        System.out.println("Global function: " + funName);
+        this.globalScope = globalScope;
     }
 
     @Override
@@ -70,7 +65,14 @@ public class ByteTranslator implements common.Translator {
 
     @Override
     public void translateLetForm(String ident, LispParser.FormContext ident_body, LispParser.FormContext let_body, StringBuilder out) {
-
+        // добавить имя ident в скоуп, чтобы по нему можно было получить ident_body
+        ByteLispWalker.Var var = new ByteLispWalker.Var();
+        var.name = ident;
+        var.value = translateForm(ident_body, "");
+        globalScope.add(var);
+        String ident_init = "\t" + ident + " = " + translateForm(ident_body, "") + ";\n";
+        initializer.append(ident_init);
+        out.append(translateForm(let_body, ""));
     }
 
     @Override
@@ -109,7 +111,9 @@ public class ByteTranslator implements common.Translator {
             case "inc" -> out.append("lisp_inc").append("(");
             case "dec" -> out.append("lisp_dec").append("(");
             case "print" -> out.append("lisp_print").append("(");
-            case "read" -> out.append("lisp_read").append("(");
+            case "readInt" -> out.append("lisp_readInt").append("(");
+            case "readBool" -> out.append("lisp_readBool").append("(");
+            case "readString" -> out.append("lisp_readString").append("(");
             case "=" -> out.append("lisp_eq").append("(");
             case "or" -> out.append("lisp_or").append("(");
             case "and" -> out.append("lisp_and").append("(");
@@ -123,11 +127,7 @@ public class ByteTranslator implements common.Translator {
                 return out + delimiter;
             }
             default -> {
-                if (globalScope.contains(firstForm.IDENTIFIER().getText() + "0")) {
-                    out.append(firstForm.IDENTIFIER()).append("0").append("(");
-                } else {
-                    translateApplication(firstForm.IDENTIFIER().getText(), args, out);
-                }
+                out.append(firstForm.IDENTIFIER()).append("0").append("(");
             }
         }
         return null;

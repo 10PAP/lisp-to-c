@@ -17,7 +17,13 @@ public class ByteLispWalker extends LispBaseListener {
     StringBuilder initializer = new StringBuilder();
     List<StringBuilder> functions = new ArrayList<>();
 
-    ByteTranslator byteTranslator = new ByteTranslator(initializer, functions);
+    public static class Var {
+        String name;
+        String value;
+    }
+    List<Var> globalScope = new ArrayList<>();
+
+    ByteTranslator byteTranslator = new ByteTranslator(initializer, functions, globalScope);
 
     @Override
     public void enterProgram(LispParser.ProgramContext ctx) {
@@ -39,6 +45,8 @@ public class ByteLispWalker extends LispBaseListener {
             vboolClass.writeFile("out/");
 
             runtimeClass = pool.get("Runtime");
+
+            initializer.append("public static void initializer() {\n");
         } catch (NotFoundException | ClassNotFoundException | CannotCompileException | IOException e) {
             e.printStackTrace();
         }
@@ -52,7 +60,7 @@ public class ByteLispWalker extends LispBaseListener {
                 LispParser.Fun_definitionContext fun_definition = top_level_form.fun_definition();
                 String symbol_name = fun_definition.IDENTIFIER().getText();
                 String function_name = symbol_name + "0";
-                byteTranslator.updateGlobalScope(function_name);
+                //byteTranslator.updateGlobalScope(function_name);
                 byteTranslator.translateFunctionDefinition(function_name, symbol_name, fun_definition.decl().IDENTIFIER(), fun_definition.form());
             }
         }
@@ -62,9 +70,22 @@ public class ByteLispWalker extends LispBaseListener {
 
     public void exitProgram(LispParser.ProgramContext ctx) {
         // add main method
-        String main = "public static void main(String [] args) {\n" + mainBody.toString() + "}";
+        String main = "public static void main(String [] args) {\n" +
+                "initializer();\n" +
+                mainBody.toString() + "}";
+        initializer.append("}");
 
         try {
+            System.out.println(globalScope.size());
+            for (var i : globalScope) {
+                String fieldStr = "private static Value " + i.name + ";";
+                System.out.println(fieldStr);
+                CtField ctField = CtField.make(fieldStr, runtimeClass);
+                runtimeClass.addField(ctField);
+            }
+
+            CtMethod init = CtMethod.make(initializer.toString(), runtimeClass);
+            runtimeClass.addMethod(init);
 
             // add global functions into the classfile
             for (var f : functions) {
