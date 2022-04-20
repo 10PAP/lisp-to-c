@@ -28,28 +28,7 @@ public class ByteLispWalker extends LispBaseListener {
     @Override
     public void enterProgram(LispParser.ProgramContext ctx) {
 
-        try {
-            pool.insertClassPath(new ClassClassPath(Class.forName("Runtime")));
-            pool.insertClassPath(new ClassClassPath(Class.forName("Value")));
-            pool.insertClassPath(new ClassClassPath(Class.forName("VInt")));
-            pool.insertClassPath(new ClassClassPath(Class.forName("VString")));
-            pool.insertClassPath(new ClassClassPath(Class.forName("VBool")));
-
-            CtClass valueClass = pool.get("Value");
-            CtClass vintClass = pool.get("VInt");
-            CtClass vstringClass = pool.get("VString");
-            CtClass vboolClass = pool.get("VBool");
-            valueClass.writeFile("out/");
-            vintClass.writeFile("out/");
-            vstringClass.writeFile("out/");
-            vboolClass.writeFile("out/");
-
-            runtimeClass = pool.get("Runtime");
-
-            initializer.append("public static void initializer() {\n");
-        } catch (NotFoundException | ClassNotFoundException | CannotCompileException | IOException e) {
-            e.printStackTrace();
-        }
+        runtimeClass = byteTranslator.InitClassPool(pool);
 
         // пройдем по всем form высшего уровня - это вызывы для main метода
         for(var top_level_form : ctx.top_level_from()){

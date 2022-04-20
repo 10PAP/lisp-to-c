@@ -1,8 +1,10 @@
 package bytetrans;
 
 import gen.LispParser;
+import javassist.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +20,34 @@ public class ByteTranslator implements common.Translator {
         this.initializer = initializer;
         this.functions = functions;
         this.globalScope = globalScope;
+    }
+
+    public CtClass InitClassPool(ClassPool pool) {
+
+        try {
+
+            pool.insertClassPath(new ClassClassPath(Class.forName("Runtime")));
+            pool.insertClassPath(new ClassClassPath(Class.forName("Value")));
+            pool.insertClassPath(new ClassClassPath(Class.forName("VInt")));
+            pool.insertClassPath(new ClassClassPath(Class.forName("VString")));
+            pool.insertClassPath(new ClassClassPath(Class.forName("VBool")));
+
+            CtClass valueClass = pool.get("Value");
+            CtClass vintClass = pool.get("VInt");
+            CtClass vstringClass = pool.get("VString");
+            CtClass vboolClass = pool.get("VBool");
+            valueClass.writeFile("out/");
+            vintClass.writeFile("out/");
+            vstringClass.writeFile("out/");
+            vboolClass.writeFile("out/");
+
+            initializer.append("public static void initializer() {\n");
+
+            return pool.get("Runtime");
+        } catch (NotFoundException | ClassNotFoundException | CannotCompileException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
